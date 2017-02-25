@@ -10,15 +10,29 @@ define("main", ['domReady!', 'jquery', 'bootstrap', 'leaflet', 'Position', 'Path
         var outputType = OutputType.ARRAY;
 
         var map = L.map('map', {
-            maxBounds: L.latLngBounds(L.latLng(-40, -180), L.latLng(85, 153))
-        }).setView([50, 50], 4);
+            //maxBounds: L.latLngBounds(L.latLng(-40, -180), L.latLng(85, 153))
+        }).setView([-73, -112], 7);
 
-        L.tileLayer('https://raw.githubusercontent.com/Explv/osrs_map/master/{z}/{x}/{y}.png', {
-            minZoom: 3,
-            maxZoom: 9,
-            attribution: 'Map data',
-            noWrap: true
-        }).addTo(map);
+        var z = 0;
+
+        var layer;
+
+        function setMapLayer() {
+          if (layer !== undefined) {
+            map.removeLayer(layer);
+          }
+          layer = L.tileLayer('https://raw.githubusercontent.com/Explv/osrs_map_full/master/' + z + '/{z}/{x}/{y}.png', {
+              minZoom: 7,
+              maxZoom: 11,
+              attribution: 'Map data',
+              noWrap: true,
+              tms: true
+          });
+          layer.addTo(map);
+          map.invalidateSize();
+        }
+
+        setMapLayer();
 
         var path = new Path(map, new L.FeatureGroup());
         var areas = new Areas(new L.FeatureGroup());
@@ -141,7 +155,6 @@ define("main", ['domReady!', 'jquery', 'bootstrap', 'leaflet', 'Position', 'Path
         });
 
         $(document).keydown(function (e) {
-
             if (e.keyCode == 17) {
                 editing = !editing;
                 var editStatus = $("#edit-status");
@@ -151,10 +164,11 @@ define("main", ['domReady!', 'jquery', 'bootstrap', 'leaflet', 'Position', 'Path
         });
 
         map.on('click', function (e) {
+            if (!editing) {
+              return;
+            }
 
-            if (!editing) return;
-
-            var position = Position.fromLatLng(map, e.latlng);
+            var position = Position.fromLatLng(map, e.latlng, z);
 
             if (currentDrawable instanceof Areas) {
                 if (firstSelectedAreaPosition === undefined) {
@@ -173,7 +187,7 @@ define("main", ['domReady!', 'jquery', 'bootstrap', 'leaflet', 'Position', 'Path
 
         map.on('mousemove', function (e) {
 
-            var mousePos = Position.fromLatLng(map, e.latlng);
+            var mousePos = Position.fromLatLng(map, e.latlng, z);
 
             if (prevMousePos !== mousePos) {
 
@@ -186,6 +200,7 @@ define("main", ['domReady!', 'jquery', 'bootstrap', 'leaflet', 'Position', 'Path
 
                 $("#xCoord").val(mousePos.x);
                 $("#yCoord").val(mousePos.y);
+                $("#zCoord").val(mousePos.z);
             }
 
             if (editing) {
@@ -212,9 +227,9 @@ define("main", ['domReady!', 'jquery', 'bootstrap', 'leaflet', 'Position', 'Path
 
         function goToCoordinates(x, y) {
             if (searchMarker !== undefined) map.removeLayer(searchMarker);
-            searchMarker = L.marker(new Position(map, x, y).toCentreLatLng());
+            searchMarker = L.marker(new Position(map, x, y, z).toCentreLatLng());
             searchMarker.addTo(map);
-            searchMarker.bindPopup("[{0}, {1}, 0]".format(x, y)).openPopup();
+            searchMarker.bindPopup("[{0}, {1}, {2}]".format(x, y, z)).openPopup();
         }
 
         document.onmousemove = function (e) {
@@ -249,4 +264,22 @@ define("main", ['domReady!', 'jquery', 'bootstrap', 'leaflet', 'Position', 'Path
             $("#code-output").html(output);
             SyntaxHighlighter.highlight($("#code-output"));
         }
+
+        $("#increase-level").click(function() {
+          if (z == 3) {
+            return;
+          }
+          z ++;
+          $("#zCoord").val(z);
+          setMapLayer();
+        });
+
+        $("#decrease-level").click(function() {
+          if (z == 0) {
+            return;
+          }
+          z --;
+          $("#zCoord").val(z);
+          setMapLayer();
+        });
 });

@@ -114,12 +114,12 @@ html, body{
     color:#121212;
 }
 
-.navbar .coord{
-
-    width:60px;
+.navbar .coord {
+    width:80px;
     background:none;
     border: 1px solid #33b5e5;
     color:#FFFFFF;
+    text-align: center;
 }
 
 #edit-text{

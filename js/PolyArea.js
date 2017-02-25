@@ -63,8 +63,8 @@ define("PolyArea", ['jquery', "Drawable"], function ($, Drawable) {
 
             for (var i = 0; i < latLngs.length; i++) {
                 var point = this.map.project(latLngs[i], this.map.getMaxZoom());
-                point.x -= 24;
-                point.y += 40;
+                point.x -= 8;
+                point.y += 8;
                 latLngs[i] = this.map.unproject(point, this.map.getMaxZoom());
             }
 
@@ -85,7 +85,11 @@ define("PolyArea", ['jquery', "Drawable"], function ($, Drawable) {
                     output += ",";
                 }
             }
-            output += "\n    }\n);";
+            output += "\n    }\n)";
+            if (this.positions.length > 0 && this.positions[0].z > 0) {
+              output += `.setPlane(${this.positions[0].z})`;
+            }
+            output += ";";
             return output;
         }
 

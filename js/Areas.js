@@ -36,12 +36,12 @@ define("Areas", ['jquery'], function ($) {
 
         toArrayString() {
             if (this.areas.length === 1) {
-                return this.areas[0].toJavaCode();
+                return this.areas[0].toJavaCode() + ";";
             } else if (this.areas.length > 1) {
                 var output = "Area[] area = {\n";
                 var numAreas = this.areas.length;
                 $.each(this.areas, function (index, area) {
-                    output += `    new Area(${area.startPosition.x}, ${area.startPosition.y}, ${area.endPosition.x}, ${area.endPosition.y})`;
+                    output += "    " + area.toJavaCode();
                     if (index !== numAreas - 1) {
                         output += ",";
                     }
@@ -56,11 +56,11 @@ define("Areas", ['jquery'], function ($) {
 
         toListString() {
             if (this.areas.length === 1) {
-                return this.areas[0].toJavaCode();
+                return this.areas[0].toJavaCode()  + ";";
             } else if (this.areas.length > 1) {
                 var output = "List&lt;Area&gt; area = new ArrayList<>();\n";
                 $.each(this.areas, function (index, area) {
-                    output += `area.add(new Area(${area.startPosition.x}, ${area.startPosition.y}, ${area.endPosition.x}, ${area.endPosition.y}));\n`;
+                    output += "area.add(" + area.toJavaCode() + ");\n";
                 });
                 return output;
             }
@@ -70,13 +70,13 @@ define("Areas", ['jquery'], function ($) {
         toArraysAsListString() {
 
             if (this.areas.length === 1) {
-                return this.areas[0].toJavaCode();
+                return this.areas[0].toJavaCode() + ";";
             } else if (this.areas.length > 1) {
                 var output = "List&lt;Area&gt; area = Arrays.asList(\n" +
                     "    new Area[]{\n";
                 var numAreas = this.areas.length;
                 $.each(this.areas, function (index, area) {
-                    output += `        new Area(${area.startPosition.x}, ${area.startPosition.y}, ${area.endPosition.x}, ${area.endPosition.y})`;
+                    output += "        " + area.toJavaCode();
                     if (index !== numAreas - 1) {
                         output += ",";
                     }
