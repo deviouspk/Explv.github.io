@@ -1,8 +1,8 @@
 'use strict';
 
-define("main", ['domReady!', 'jquery', 'bootstrap', 'leaflet', 'Position', 'Path', 'Area', 'Areas', 'PolyArea', 'SyntaxHighlighter'],
+define("main", ['domReady!', 'jquery', 'bootstrap', 'leaflet', 'Position', 'Path', 'Area', 'Areas', 'PolyArea', 'SyntaxHighlighter', 'locations'],
 
-    function (doc, $, Bootstrap, L, Position, Path, Area, Areas, PolyArea, SyntaxHighlighter) {
+    function (doc, $, Bootstrap, L, Position, Path, Area, Areas, PolyArea, SyntaxHighlighter, locations) {
 
         var accessModifier = "";
 
@@ -33,6 +33,37 @@ define("main", ['domReady!', 'jquery', 'bootstrap', 'leaflet', 'Position', 'Path
         }
 
         setMapLayer();
+
+        var mapLabels = new L.layerGroup();
+
+        for (var location in locations) {
+
+          if (locations.hasOwnProperty(location)) {
+            if (locations[location].z !== z) {
+              continue;
+            }
+
+            var mapLabel = L.marker(locations[location].toCentreLatLng(map), {
+                icon: L.divIcon({
+                    className: 'map-label',
+                    html: `<p>${location}</p>`
+                }),
+                zIndexOffset: 1000
+            });
+
+            mapLabels.addLayer(mapLabel);
+          }
+        }
+
+        mapLabels.addTo(map);
+
+        $("#toggle-map-labels").click(function() {
+            if (map.hasLayer(mapLabels)) {
+              map.removeLayer(mapLabels);
+            } else {
+              mapLabels.addTo(map);
+            }
+        });
 
         var path = new Path(map, new L.FeatureGroup());
         var areas = new Areas(new L.FeatureGroup());
@@ -195,7 +226,7 @@ define("main", ['domReady!', 'jquery', 'bootstrap', 'leaflet', 'Position', 'Path
 
                 if (prevMouseRect !== undefined) map.removeLayer(prevMouseRect);
 
-                prevMouseRect = mousePos.toLeaflet();
+                prevMouseRect = mousePos.toLeaflet(map);
                 prevMouseRect.addTo(map);
 
                 $("#xCoord").val(mousePos.x);
@@ -227,7 +258,7 @@ define("main", ['domReady!', 'jquery', 'bootstrap', 'leaflet', 'Position', 'Path
 
         function goToCoordinates(x, y) {
             if (searchMarker !== undefined) map.removeLayer(searchMarker);
-            searchMarker = L.marker(new Position(map, x, y, z).toCentreLatLng());
+            searchMarker = L.marker(new Position(map, x, y, z).toCentreLatLng(map));
             searchMarker.addTo(map);
             searchMarker.bindPopup("[{0}, {1}, {2}]".format(x, y, z)).openPopup();
         }

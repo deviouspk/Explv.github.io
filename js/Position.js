@@ -4,12 +4,12 @@ define("Position", ['leaflet', 'Drawable'], function(L, Drawable) {
 
     return class Position extends Drawable {
 
-        constructor(map, x, y, z) {
-            super(map);
+        constructor(x, y, z) {
+            super();
             this.x = Math.round(x);
             this.y = Math.round(y);
             this.z = z;
-            this.rectangle = this.toLeaflet(this.map);
+            //this.rectangle = this.toLeaflet(this.map);
         }
 
         static fromLatLng(map, latLng, z) {
@@ -17,19 +17,19 @@ define("Position", ['leaflet', 'Drawable'], function(L, Drawable) {
             var y = 53504 - point.y;
             y = Math.round((y - 32) / 32) + 14776;
             var x = Math.round((point.x - 32) / 32);
-            return new Position(map, x, y, z);
+            return new Position(x, y, z);
         }
 
-        toLatLng() {
+        toLatLng(map) {
             var x = (this.x * 32) + 8;
             var y = (53504 - ((this.y - 14776) * 32)) - 8;
-            return this.map.unproject(L.point(x, y), this.map.getMaxZoom());
+            return map.unproject(L.point(x, y), map.getMaxZoom());
         }
 
-        toCentreLatLng() {
+        toCentreLatLng(map) {
             var x = ((this.x + 0.5) * 32);
             var y = ((53504 - ((this.y + 0.5 - 14776) * 32)));
-            return this.map.unproject(L.point(x, y), this.map.getMaxZoom());
+            return map.unproject(L.point(x, y), map.getMaxZoom());
         }
 
         getDistance(position) {
@@ -38,14 +38,14 @@ define("Position", ['leaflet', 'Drawable'], function(L, Drawable) {
             return Math.sqrt((diffX * diffX) + (diffY * diffY));
         }
 
-        toLeaflet() {
-            var point = this.map.project(this.toLatLng(), this.map.getMaxZoom());
+        toLeaflet(map) {
+            var point = map.project(this.toLatLng(map), map.getMaxZoom());
             var startX = (Math.floor(point.x / 32) * 32) + 8;
             var startY = (Math.floor(point.y / 32) * 32) - 8;
             var endX = startX + 32;
             var endY = startY + 32;
-            var startLatLng = this.map.unproject(L.point(startX, startY), this.map.getMaxZoom());
-            var endLatLng = this.map.unproject(L.point(endX, endY), this.map.getMaxZoom());
+            var startLatLng = map.unproject(L.point(startX, startY), map.getMaxZoom());
+            var endLatLng = map.unproject(L.point(endX, endY), map.getMaxZoom());
 
             return L.rectangle(L.latLngBounds(startLatLng, endLatLng), {
                 color: "#33b5e5",

@@ -11,8 +11,18 @@ html, body{
     overflow:hidden;
 }
 
-#pageHeader{
+.map-label p {
+  white-space: nowrap;
+  display: inline-block;
+  font-size: 1em;
+  font-weight: 700;
+  text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
+  color:white;
+  text-align: center;
+  transform: translateX(-25%);
+}
 
+#pageHeader{
     height:5%;
     width:100%;
     background-color: #121212;
@@ -20,7 +30,6 @@ html, body{
 }
 
 #pageHeader h1{
-
     font-family: zrnic;
     margin:0;
     padding-top:0.15%;
@@ -30,12 +39,10 @@ html, body{
 }
 
 .navbar-brand{
-
     color:#FFFFFF !important;
 }
 
 .navbar-brand #explv{
-
     color: #33b5e5;
 }
 
