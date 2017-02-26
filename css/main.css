@@ -11,6 +11,13 @@ html, body{
     overflow:hidden;
 }
 
+.ui-autocomplete {
+  z-index: 2000;
+  border: 1px solid #ffffff;
+  background-color:#121212;
+  color:#ffffff;
+}
+
 .map-label p {
   white-space: nowrap;
   display: inline-block;
@@ -19,7 +26,7 @@ html, body{
   text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;
   color:white;
   text-align: center;
-  transform: translateX(-25%);
+  transform: translateX(-50%);
 }
 
 #pageHeader{
@@ -121,11 +128,19 @@ html, body{
     color:#121212;
 }
 
-.navbar .coord {
-    width:80px;
+.navbar input {
     background:none;
     border: 1px solid #33b5e5;
     color:#FFFFFF;
+}
+
+#location-lookup {
+    padding:5px;
+    border-radius: 4px;
+}
+
+.navbar .coord {
+    width:80px;
     text-align: center;
 }
 

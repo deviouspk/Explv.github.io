@@ -251,6 +251,21 @@ define("locations", ['Position'], function (Position) {
       "Dragontooth Island" : new Position(3806, 3554, 0),
       "Mos Le'Harmless" : new Position(3709, 3029, 0),
       "Distilleries" : new Position(3787, 2997, 0),
-      "Harmony" : new Position(3801, 2858)
+      "Harmony" : new Position(3801, 2858),
+      "Stronghold of Security - Vault of War" : new Position(1884, 5218, 0),
+      "Stronghold of Security - Catacomb of Famine" : new Position(2016, 5215, 0),
+      "Stronghold of Security - Pit of Pestilence" : new Position(2144, 5280, 0),
+      "Stronghold of Security - Sepulchre of Death" : new Position(2333, 5219, 0),
+      "Dorgesh-Kaan" : new Position(2717, 5319, 0),
+      "Raids" : new Position(3312, 5295, 0),
+      "Sorceress's Garden" : new Position(2909, 5472, 0),
+      "TzHaar City" : new Position(2451, 5146, 0),
+      "Zanaris" : new Position(2415, 4455, 0),
+      "Clan Wars" : new Position(3422, 4735, 0),
+      "Motherlode Mine" : new Position(3745, 5665, 0),
+      "Varrock Sewers" : new Position(3225, 9887, 0),
+      "Edgeville Dungeon" : new Position(3114, 9917, 0),
+      "Dwarven Mine" : new Position(3024, 9791, 0),
+      "Keldagrim" : new Position(2855, 10175, 0)
     };
 });

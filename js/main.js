@@ -1,8 +1,8 @@
 'use strict';
 
-define("main", ['domReady!', 'jquery', 'bootstrap', 'leaflet', 'Position', 'Path', 'Area', 'Areas', 'PolyArea', 'SyntaxHighlighter', 'locations'],
+define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Position', 'Path', 'Area', 'Areas', 'PolyArea', 'SyntaxHighlighter', 'locations'],
 
-    function (doc, $, Bootstrap, L, Position, Path, Area, Areas, PolyArea, SyntaxHighlighter, locations) {
+    function (doc, $, $ui, Bootstrap, L, Position, Path, Area, Areas, PolyArea, SyntaxHighlighter, locations) {
 
         var accessModifier = "";
 
@@ -258,9 +258,9 @@ define("main", ['domReady!', 'jquery', 'bootstrap', 'leaflet', 'Position', 'Path
 
         function goToCoordinates(x, y) {
             if (searchMarker !== undefined) map.removeLayer(searchMarker);
-            searchMarker = L.marker(new Position(map, x, y, z).toCentreLatLng(map));
+            searchMarker = new L.marker(new Position(x, y, z).toCentreLatLng(map));
             searchMarker.addTo(map);
-            searchMarker.bindPopup("[{0}, {1}, {2}]".format(x, y, z)).openPopup();
+            map.panTo(searchMarker.getLatLng());
         }
 
         document.onmousemove = function (e) {
@@ -312,5 +312,27 @@ define("main", ['domReady!', 'jquery', 'bootstrap', 'leaflet', 'Position', 'Path
           z --;
           $("#zCoord").val(z);
           setMapLayer();
+        });
+
+        $("#location-lookup").autocomplete({
+          minLength:2,
+          source: function (request, response) {
+           var locationsArray = $.map(locations, function (value, key) {
+                return {
+                    label: key,
+                    value: value
+                }
+            });
+            response($.ui.autocomplete.filter(locationsArray, request.term));
+          },
+          focus: function(event, ui) {
+              $("#location-lookup").val(ui.item.label);
+              return false;
+          },
+          select: function(event, ui) {
+              $("#location-lookup").val(ui.item.label);
+              goToCoordinates(ui.item.value.x, ui.item.value.y);
+              return false;
+          }
         });
 });
