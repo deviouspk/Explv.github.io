@@ -9,7 +9,6 @@ define("Position", ['leaflet', 'Drawable'], function(L, Drawable) {
             this.x = Math.round(x);
             this.y = Math.round(y);
             this.z = z;
-            //this.rectangle = this.toLeaflet(this.map);
         }
 
         static fromLatLng(map, latLng, z) {

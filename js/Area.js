@@ -22,8 +22,8 @@ define("Area", ['leaflet', 'Drawable', 'Position'], function(L, Drawable, Positi
 
         toLeaflet() {
 
-            var newStartPosition = new Position(this.map, this.startPosition.x, this.startPosition.y);
-            var newEndPosition = new Position(this.map, this.endPosition.x, this.endPosition.y);
+            var newStartPosition = new Position(this.startPosition.x, this.startPosition.y, this.startPosition.z);
+            var newEndPosition = new Position(this.endPosition.x, this.endPosition.y, this.startPosition.z);
 
             if (this.endPosition.x >= this.startPosition.x) {
                 newEndPosition.x += 1;
@@ -39,8 +39,8 @@ define("Area", ['leaflet', 'Drawable', 'Position'], function(L, Drawable, Positi
 
             return L.rectangle(
                 L.latLngBounds(
-                    newStartPosition.toLatLng(),
-                    newEndPosition.toLatLng()
+                    newStartPosition.toLatLng(this.map),
+                    newEndPosition.toLatLng(this.map)
                 ), {
                     color: "#33b5e5",
                     weight: 1,

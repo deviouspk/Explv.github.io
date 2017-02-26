@@ -57,9 +57,9 @@ define("PolyArea", ['jquery', "Drawable"], function ($, Drawable) {
 
             var latLngs = [];
 
-            $.each(this.positions, function(index, position){
-                latLngs.push(position.toCentreLatLng());
-            });
+            for (var i = 0; i < this.positions.length; i ++) {
+              latLngs.push(this.positions[i].toCentreLatLng(this.map));
+            }
 
             for (var i = 0; i < latLngs.length; i++) {
                 var point = this.map.project(latLngs[i], this.map.getMaxZoom());

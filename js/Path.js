@@ -29,7 +29,7 @@ define("Path", ["Position"], function (Position) {
                     for (var i = 0; i < localWalkerPositions.length; i++) {
 
                         this.positions.push(localWalkerPositions[i]);
-                        this.featureGroup.addLayer(localWalkerPositions[i].rectangle);
+                        this.featureGroup.addLayer(localWalkerPositions[i].toLeaflet(this.map));
                         this.lines.push(this.createPolyline(this.positions[this.positions.length - 2], this.positions[this.positions.length - 1]));
                         this.featureGroup.addLayer(this.lines[this.lines.length - 1]);
                     }
@@ -42,7 +42,7 @@ define("Path", ["Position"], function (Position) {
                 }
             } else {
                 this.positions.push(position);
-                this.featureGroup.addLayer(position.rectangle);
+                this.featureGroup.addLayer(position.toLeaflet(this.map));
             }
         }
 
@@ -57,7 +57,7 @@ define("Path", ["Position"], function (Position) {
         }
 
         createPolyline(startPosition, endPosition) {
-            return L.polyline([startPosition.toCentreLatLng(), endPosition.toCentreLatLng()], {clickable: false});
+            return L.polyline([startPosition.toCentreLatLng(this.map), endPosition.toCentreLatLng(this.map)], {clickable: false});
         }
 
         getLocalWalkerPositions(startPosition, endPosition) {
@@ -75,7 +75,6 @@ define("Path", ["Position"], function (Position) {
             while (startPosition.getDistance(endPosition) > 10) {
 
                 startPosition = new Position(
-                    this.map,
                     endPosition.x > startPosition.x ? startPosition.x + (sX * 10) : startPosition.x - (sX * 10),
                     endPosition.y > startPosition.y ? startPosition.y + (sY * 10) : startPosition.y - (sY * 10),
                     startPosition.z
