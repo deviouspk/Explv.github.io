@@ -53,21 +53,14 @@ html, body{
     color: #33b5e5;
 }
 
-#settings-form {
-    border: 1px solid #ffffff;
-    padding-top:20px;
-    background-color:#121212;
-    width:400px;
-    color:#ffffff;
-}
-
-#settings-form select{
+#output-type {
     background:none;
     border:1px solid #33b5e5;
     color:#FFFFFF;
+    max-width: 200px;
 }
 
-#settings-form option {
+#output-type option {
     background-color:#121212;
     color: #ffffff;
 }
@@ -152,10 +145,10 @@ html, body{
 }
 
 #output-container{
+    overflow-y: scroll;
     padding:0;
     background-color:#121212;
     border-right:1px solid #FFFFFF;
-    overflow-y:scroll;
 }
 
 #output-container .panel-default{
@@ -170,15 +163,12 @@ html, body{
 }
 
 #output-container .panel-body{
-
     padding:10px;
 }
 
 #output-container code{
-
     color:#eee8d5;
     background-color:#121212;
-    height:100%;
 }
 
 #output-container .panel-heading{

@@ -23,57 +23,19 @@
                 <span id="explv">Explv</span>'s OSBot Map
             </a>
         </div>
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">
-                        <span class="glyphicon glyphicon-cog"></span>
-                    </a>
-                    <form class="dropdown-menu form-horizontal" id="settings-form">
-                        <div class="form-group">
-                            <label for="access-modifier" class="col-sm-5 control-label">Access modifier:</label>
-                            <div class="col-sm-5">
-                                <select class="form-control" id="access-modifier">
-                                    <option>none</option>
-                                    <option>public</option>
-                                    <option>private</option>
-                                    <option>protected</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="static" class="col-sm-5 control-label">static:</label>
-                            <div class="col-sm-5">
-                                <input type="checkbox" id="static">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="final" class="col-sm-5 control-label">final:</label>
-                            <div class="col-sm-5">
-                                <input type="checkbox" id="final">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="output-type" class="col-sm-5 control-label">Output type:</label>
-                            <div class="col-sm-5">
-                                <select class="form-control" id="output-type">
-                                    <option>Array</option>
-                                    <option>List</option>
-                                    <option>Arrays.asList</option>
-                                </select>
-                            </div>
-                        </div>
-                    </form>
-                </li>
-            </ul>            
-        </div>
     </div>
 </nav>
 <div class="container-fluid" id="container">
     <div class="col-lg-3 col-md-5 col-sm-4 col-xs-4" id="output-container"
          style="height:calc(100% - 50px); display:none;">
         <div class="panel panel-default">
+            <div class="panel-heading">
+                  <select class="form-control" id="output-type">
+                      <option>Array</option>
+                      <option>List</option>
+                      <option>Arrays.asList</option>
+                  </select>
+            </div>
             <div class="panel-body">
                 <pre><code id="code-output"></code></pre>
             </div>

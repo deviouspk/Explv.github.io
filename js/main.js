@@ -4,8 +4,6 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
 
     function (doc, $, $ui, Bootstrap, L, Position, Path, Area, Areas, PolyArea, SyntaxHighlighter, locations) {
 
-        var accessModifier = "";
-
         var OutputType = Object.freeze({ARRAY: 1, LIST: 2, ARRAYS_AS_LIST: 3});
         var outputType = OutputType.ARRAY;
 
@@ -15,16 +13,6 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
 
         /*
           Init custom controls
-        */
-
-        /*
-        <form class="navbar-form navbar-right" role="search">
-            <div class="form-group">
-                <input type="text" class="form-control coord" placeholder="x" id="xCoord">
-                <input type="text" class="form-control coord" placeholder="y" id="yCoord">
-                <input type="text" class="form-control coord" placeholder="z" id="zCoord">
-            </div>
-        </form>
         */
         var coordinatesControl = L.Control.extend({
             options: {
@@ -113,7 +101,7 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
               areaButton.innerHTML = 'Area';
 
               var polyAreaButton = L.DomUtil.create('a', 'leaflet-bar leaflet-control leaflet-control-custom toggle-collection', container);
-              polyAreaButton.id = 'toggle-path';
+              polyAreaButton.id = 'toggle-poly-area';
               polyAreaButton.innerHTML = 'Poly Area';
 
               var pathButton = L.DomUtil.create('a', 'leaflet-bar leaflet-control leaflet-control-custom toggle-collection', container);
@@ -216,21 +204,12 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
         var prevMouseRect, prevMousePos;
         var cursorX, cursorY;
 
-        var isStatic = false;
-        var isFinal = false;
-
         var firstSelectedAreaPosition;
         var drawnMouseArea;
 
         var searchMarker;
 
         var editing = false;
-
-        $("#access-modifier").change(function () {
-            var newModifier = $("#access-modifier").val();
-            accessModifier = newModifier == "none" ? "" : newModifier;
-            output();
-        });
 
         $("#output-type").change(function () {
             switch ($("#output-type").val()) {
@@ -324,16 +303,6 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
             output();
         });
 
-        $("#static").change(function () {
-            isStatic = !isStatic;
-            output();
-        });
-
-        $("#final").change(function () {
-            isFinal = !isFinal;
-            output();
-        });
-
         map.on('click', function (e) {
             if (!editing) {
               return;
@@ -411,10 +380,6 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
         function output() {
 
             var output = "";
-
-            if (accessModifier != "") output += accessModifier + " ";
-            if (isStatic) output += "static ";
-            if (isFinal)  output += "final ";
 
             if (currentDrawable instanceof PolyArea) {
                 output += currentDrawable.toJavaCode();
