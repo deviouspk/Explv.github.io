@@ -9,6 +9,7 @@ define("Path", ["Position"], function (Position) {
             this.featureGroup = featureGroup;
             this.positions = [];
             this.lines = [];
+            this.rectangles = [];
         }
 
         show() {
@@ -27,32 +28,38 @@ define("Path", ["Position"], function (Position) {
                     var localWalkerPositions = this.getLocalWalkerPositions(this.positions[this.positions.length - 1], position);
 
                     for (var i = 0; i < localWalkerPositions.length; i++) {
-
                         this.positions.push(localWalkerPositions[i]);
-                        this.featureGroup.addLayer(localWalkerPositions[i].toLeaflet(this.map));
+                        var rectangle = localWalkerPositions[i].toLeaflet(this.map);
+                        this.featureGroup.addLayer(rectangle);
+                        this.rectangles.push(rectangle);
                         this.lines.push(this.createPolyline(this.positions[this.positions.length - 2], this.positions[this.positions.length - 1]));
                         this.featureGroup.addLayer(this.lines[this.lines.length - 1]);
                     }
                 } else {
-
                     this.positions.push(position);
-                    this.featureGroup.addLayer(position.rectangle);
+                    var rectangle = position.toLeaflet(this.map);
+                    this.featureGroup.addLayer(rectangle);
+                    this.rectangles.push(rectangle);
                     this.lines.push(this.createPolyline(this.positions[this.positions.length - 2], this.positions[this.positions.length - 1]));
                     this.featureGroup.addLayer(this.lines[this.lines.length - 1]);
                 }
             } else {
                 this.positions.push(position);
-                this.featureGroup.addLayer(position.toLeaflet(this.map));
+                var rectangle = position.toLeaflet(this.map);
+                this.featureGroup.addLayer(rectangle);
+                this.rectangles.push(rectangle);
             }
         }
 
         removeLast() {
-            if (this.positions.length > 0) this.featureGroup.removeLayer(this.positions.pop().rectangle);
+            if (this.positions.length > 0) this.featureGroup.removeLayer(this.positions.pop());
             if (this.lines.length > 0) this.featureGroup.removeLayer(this.lines.pop());
+            if (this.rectangles.length > 0) this.featureGroup.removeLayer(this.rectangles.pop());
         }
 
         removeAll() {
-            while (this.positions.length > 0) this.featureGroup.removeLayer(this.positions.pop().rectangle);
+            while (this.positions.length > 0) this.featureGroup.removeLayer(this.positions.pop());
+            while (this.rectangles.length > 0) this.featureGroup.removeLayer(this.rectangles.pop());
             while (this.lines.length > 0) this.featureGroup.removeLayer(this.lines.pop());
         }
 
