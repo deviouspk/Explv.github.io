@@ -13,6 +13,148 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
             //maxBounds: L.latLngBounds(L.latLng(-40, -180), L.latLng(85, 153))
         }).setView([-73, -112], 7);
 
+        /*
+          Init custom controls
+        */
+
+        /*
+        <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+                <input type="text" class="form-control coord" placeholder="x" id="xCoord">
+                <input type="text" class="form-control coord" placeholder="y" id="yCoord">
+                <input type="text" class="form-control coord" placeholder="z" id="zCoord">
+            </div>
+        </form>
+        */
+        var coordinatesControl = L.Control.extend({
+            options: {
+              position: 'topleft'
+            },
+            onAdd: function(map) {
+              var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+              container.id = 'coordinates-container';
+              container.style.height = 'auto';
+
+              var coordinatesForm = L.DomUtil.create('form', 'leaflet-bar leaflet-control leaflet-control-custom form-inline', container);
+              var formGroup = L.DomUtil.create('div', 'form-group', coordinatesForm);
+              var xCoordInput = L.DomUtil.create('input', 'form-control coord', formGroup);
+              xCoordInput.type = 'text';
+              xCoordInput.id = 'xCoord';
+              var yCoordInput = L.DomUtil.create('input', 'form-control coord', formGroup);
+              yCoordInput.type = 'text';
+              yCoordInput.id = 'yCoord';
+              var zCoordInput = L.DomUtil.create('input', 'form-control coord', formGroup);
+              zCoordInput.type = 'text';
+              zCoordInput.id = 'zCoord';
+
+              L.DomEvent.disableClickPropagation(container);
+              return container;
+            }
+        });
+        map.addControl(new coordinatesControl());
+
+        var planeControl = L.Control.extend({
+            options: {
+              position: 'topleft'
+            },
+            onAdd: function(map) {
+              var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+              container.style.background = 'none';
+              container.style.width = '70px';
+              container.style.height = 'auto';
+
+              var incrementPlaneButton = L.DomUtil.create('a', 'leaflet-bar leaflet-control leaflet-control-custom', container);
+              incrementPlaneButton.id = 'increase-level';
+              incrementPlaneButton.innerHTML = 'Plane <i class="fa fa-plus" aria-hidden="true"></i>';
+
+              var decrementPlaneButton = L.DomUtil.create('a', 'leaflet-bar leaflet-control leaflet-control-custom', container);
+              decrementPlaneButton.id = 'decrease-level';
+              decrementPlaneButton.innerHTML = 'Plane <i class="fa fa-minus" aria-hidden="true"></i>';
+
+              L.DomEvent.disableClickPropagation(container);
+              return container;
+            }
+        });
+        map.addControl(new planeControl());
+
+        var locationSearch = L.Control.extend({
+            options: {
+              position: 'topleft'
+            },
+            onAdd: function(map) {
+              var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+              container.style.background = 'none';
+              container.style.width = '200px';
+              container.style.height = 'auto';
+
+              var locationInput = L.DomUtil.create('input', 'leaflet-bar leaflet-control leaflet-control-custom', container);
+              locationInput.id = 'location-lookup';
+              locationInput.type = 'text';
+              locationInput.placeholder = "Go to location";
+
+              L.DomEvent.disableClickPropagation(container);
+              return container;
+            }
+        });
+        map.addControl(new locationSearch());
+
+        var collectionControls = L.Control.extend({
+            options: {
+              position: 'topleft'
+            },
+            onAdd: function(map) {
+              var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+              container.style.background = 'none';
+              container.style.width = '70px';
+              container.style.height = 'auto';
+
+              var areaButton = L.DomUtil.create('a', 'leaflet-bar leaflet-control leaflet-control-custom toggle-collection', container);
+              areaButton.id = 'toggle-area';
+              areaButton.innerHTML = 'Area';
+
+              var polyAreaButton = L.DomUtil.create('a', 'leaflet-bar leaflet-control leaflet-control-custom toggle-collection', container);
+              polyAreaButton.id = 'toggle-path';
+              polyAreaButton.innerHTML = 'Poly Area';
+
+              var pathButton = L.DomUtil.create('a', 'leaflet-bar leaflet-control leaflet-control-custom toggle-collection', container);
+              pathButton.id = 'toggle-path';
+              pathButton.innerHTML = 'Path';
+
+              var undoButton = L.DomUtil.create('a', 'leaflet-bar leaflet-control leaflet-control-custom', container);
+              undoButton.id = 'undo';
+              undoButton.innerHTML = '<i class="fa fa-undo" aria-hidden="true"></i>';
+
+              var clearButton = L.DomUtil.create('a', 'leaflet-bar leaflet-control leaflet-control-custom', container);
+              clearButton.id = 'clear';
+              clearButton.innerHTML = '<i class="fa fa-trash" aria-hidden="true"></i>';
+
+              L.DomEvent.disableClickPropagation(container);
+              return container;
+            }
+        });
+        map.addControl(new collectionControls());
+
+        var labelControl = L.Control.extend({
+            options: {
+              position: 'topleft'
+            },
+            onAdd: function(map) {
+              var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+              container.style.background = 'none';
+              container.style.width = '100px';
+              container.style.height = 'auto';
+
+              var labelsButton = L.DomUtil.create('a', 'leaflet-bar leaflet-control leaflet-control-custom', container);
+              labelsButton.id = 'toggle-map-labels';
+              labelsButton.innerHTML = 'Toggle Labels';
+
+              L.DomEvent.disableClickPropagation(container);
+              return container;
+            }
+        });
+        map.addControl(new labelControl());
+
+
         var z = 0;
 
         var layer;
@@ -107,9 +249,11 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
 
         $(".toggle-collection").click(function () {
 
-            if ($(this).parent().hasClass("active")) {
+            if ($(this).hasClass("active")) {
 
-                $(this).parent().removeClass("active");
+                editing = false;
+
+                $(this).removeClass("active");
                 $("#output-container").hide();
                 $("#map-container").removeClass("col-lg-9 col-md-7 col-sm-8 col-xs-8");
                 $("#map-container").addClass("col-lg-12 col-md-12 col-sm-12 col-xs-12");
@@ -119,13 +263,18 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
                 path.hide(map);
                 areas.hide(map);
                 polyArea.hide(map);
-                map.removeLayer(drawnMouseArea);
+
+                if (drawnMouseArea !== undefined) {
+                  map.removeLayer(drawnMouseArea);
+                }
                 output();
                 return;
             }
 
+            editing = true;
+
             $(".active").removeClass("active");
-            $(this).parent().addClass("active");
+            $(this).addClass("active");
 
             if ($("#output-container").css('display') == 'none') {
                 $("#map-container").removeClass("col-lg-12 col-md-12 col-sm-12 col-xs-12");
@@ -183,15 +332,6 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
         $("#final").change(function () {
             isFinal = !isFinal;
             output();
-        });
-
-        $(document).keydown(function (e) {
-            if (e.keyCode == 17) {
-                editing = !editing;
-                var editStatus = $("#edit-status");
-                editStatus.toggleClass("edit-disabled edit-enabled");
-                editStatus.text(editing ? "Enabled" : "Disabled");
-            }
         });
 
         map.on('click', function (e) {
@@ -314,7 +454,7 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
           setMapLayer();
         });
 
-        $("#location-lookup").autocomplete({
+        $("#map, #location-lookup").autocomplete({
           minLength:2,
           source: function (request, response) {
            var locationsArray = $.map(locations, function (value, key) {

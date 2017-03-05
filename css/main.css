@@ -116,18 +116,6 @@ html, body{
     color:#33b5e5;
 }
 
-.navbar li.active{
-
-    background-color:#33b5e5;
-    color:#121212;
-}
-
-.navbar li.active a, .navbar li a:hover{
-
-    background-color:#33b5e5;
-    color:#121212;
-}
-
 .navbar input {
     background:none;
     border: 1px solid #33b5e5;
@@ -139,9 +127,16 @@ html, body{
     border-radius: 4px;
 }
 
-.navbar .coord {
-    width:80px;
+#coordinates-container {
+  background: none;
+}
+
+.coord {
+    width:70px !important;
     text-align: center;
+    border-radius: 0;
+    border:none;
+    border-right: 1px solid #ccc;
 }
 
 #edit-text{
@@ -213,4 +208,31 @@ html, body{
 
 .fa {
     font-size:16px;
+}
+
+.leaflet-control-custom {
+  margin:0 !important;
+  width:100% !important;
+  border:none !important;
+  border-radius: 0 0 0 0;
+  border-bottom: 1px solid #ccc !important;
+  background-color: #fff;
+}
+
+a.leaflet-control-custom {
+  cursor: pointer;
+}
+
+.leaflet-control-custom-button:last-child {
+  border:none !important;
+}
+
+.leaflet-control-custom-button.active {
+    background-color:#33b5e5 !important;
+    color:#121212 !important;
+}
+
+.leaflet-control-custom-button:hover {
+    background-color:#33b5e5 !important;
+    color:#121212 !important;
 }

@@ -44,7 +44,7 @@ define("Area", ['leaflet', 'Drawable', 'Position'], function(L, Drawable, Positi
                 ), {
                     color: "#33b5e5",
                     weight: 1,
-                    clickable: false
+                    interactive: false
                 }
             );
         }

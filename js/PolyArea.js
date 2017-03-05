@@ -72,7 +72,7 @@ define("PolyArea", ['jquery', "Drawable"], function ($, Drawable) {
                 latLngs, {
                     color: "#33b5e5",
                     weight: 1,
-                    clickable: false
+                    interactive: false
                 }
             );
         }

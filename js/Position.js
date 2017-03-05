@@ -51,7 +51,7 @@ define("Position", ['leaflet', 'Drawable'], function(L, Drawable) {
                 fillColor: "#33b5e5",
                 fillOpacity: 1.0,
                 weight: 1,
-                clickable: false
+                interactive: false
             });
         }
 
