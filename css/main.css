@@ -11,6 +11,10 @@ html, body{
     overflow:hidden;
 }
 
+#map-container, #output-container {
+  height:100%;
+}
+
 .ui-autocomplete {
   z-index: 2000;
   border: 1px solid #ffffff;
@@ -49,7 +53,15 @@ html, body{
     color:#FFFFFF !important;
 }
 
-.navbar-brand #explv{
+#titleLabel {
+  font-size: 28px;
+  padding-left:15px;
+  padding-right:15px;
+  padding-top:10px;
+  padding-bottom:10px;
+}
+
+#explv{
     color: #33b5e5;
 }
 
@@ -96,40 +108,28 @@ html, body{
     display:none;
 }
 
-.navbar{
-
-    background-color:#121212;
-    margin:0;
-    border-radius: 0;
-    border-bottom:1px solid #FFFFFF;
-}
-
-.navbar li a{
-
-    color:#33b5e5;
-}
-
-.navbar input {
-    background:none;
-    border: 1px solid #33b5e5;
-    color:#FFFFFF;
-}
-
 #location-lookup {
     padding:5px;
     border-radius: 4px;
 }
 
-#coordinates-container {
-  background: none;
+.leaflet-control-custom form-group, .leaflet-control-zoom-in, .leaflet-control-zoom-out {
+  background: none !important;
+  color:white !important;
 }
 
 .coord {
     width:70px !important;
+    height:auto;
     text-align: center;
-    border-radius: 0;
+    background:none !important;
+    color:white;
     border:none;
-    border-right: 1px solid #ccc;
+    border-right: 1px solid white;
+}
+
+.coord:last-child {
+  border:none;
 }
 
 #edit-text{
@@ -200,6 +200,16 @@ html, body{
     font-size:16px;
 }
 
+.leaflet-control {
+  background-color:#121212 !important;
+  border: 1px solid white !important;
+  color:white !important;
+}
+
+.leaflet-control:hover {
+  color:#33b5e5 !important;
+}
+
 .leaflet-control-custom {
   margin:0 !important;
   width:100% !important;
@@ -207,6 +217,10 @@ html, body{
   border-radius: 0 0 0 0;
   border-bottom: 1px solid #ccc !important;
   background-color: #fff;
+}
+
+.leaflet-control-custom:last-child {
+  border:none !important;
 }
 
 a.leaflet-control-custom {

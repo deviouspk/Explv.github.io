@@ -9,11 +9,28 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
 
         var map = L.map('map', {
             //maxBounds: L.latLngBounds(L.latLng(-40, -180), L.latLng(85, 153))
+            zoomControl:false
         }).setView([-73, -112], 7);
 
         /*
           Init custom controls
         */
+        var titleLabel = L.Control.extend({
+          options: {
+            position: 'topleft'
+          },
+          onAdd: function(map) {
+            var container = L.DomUtil.create('div');
+            container.id = 'titleLabel';
+            container.href = 'http://osbot.org/forum/user/192661-explv/';
+            container.innerHTML = "<span id='explv'>Explv</span>'s OSBot Map";
+
+            L.DomEvent.disableClickPropagation(container);
+            return container;
+          }
+        });
+        map.addControl(new titleLabel());
+
         var coordinatesControl = L.Control.extend({
             options: {
               position: 'topleft'
@@ -41,6 +58,10 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
         });
         map.addControl(new coordinatesControl());
 
+        L.control.zoom({
+            position:'topleft'
+        }).addTo(map);
+
         var planeControl = L.Control.extend({
             options: {
               position: 'topleft'
@@ -53,11 +74,11 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
 
               var incrementPlaneButton = L.DomUtil.create('a', 'leaflet-bar leaflet-control leaflet-control-custom', container);
               incrementPlaneButton.id = 'increase-level';
-              incrementPlaneButton.innerHTML = 'Plane <i class="fa fa-plus" aria-hidden="true"></i>';
+              incrementPlaneButton.innerHTML = 'Z +';
 
               var decrementPlaneButton = L.DomUtil.create('a', 'leaflet-bar leaflet-control leaflet-control-custom', container);
               decrementPlaneButton.id = 'decrease-level';
-              decrementPlaneButton.innerHTML = 'Plane <i class="fa fa-minus" aria-hidden="true"></i>';
+              decrementPlaneButton.innerHTML = 'Z -';
 
               L.DomEvent.disableClickPropagation(container);
               return container;
