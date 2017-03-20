@@ -266,6 +266,9 @@ define("locations", ['Position'], function (Position) {
       "Varrock Sewers" : new Position(3225, 9887, 0),
       "Edgeville Dungeon" : new Position(3114, 9917, 0),
       "Dwarven Mine" : new Position(3024, 9791, 0),
-      "Keldagrim" : new Position(2855, 10175, 0)
+      "Keldagrim" : new Position(2855, 10175, 0),
+      "Fremennik Slayer Dungeon" : new Position(2805, 10001, 0),
+      "Taverley Dungeon" : new Position(2886, 9811, 0),
+      "Lumbridge Swamp Caves" : new Position(3169, 9571, 0)
     };
 });
