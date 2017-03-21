@@ -43,7 +43,7 @@ define("Areas", ['jquery', 'Area', 'Position'], function ($, Area, Position) {
         fromString(text) {
           this.removeAll();
           text = text.replace(/\s/g, '');
-          var areasPattern = /newArea\((\d+,\d+,\d+,\d+)|newPosition\((\d+,\d+,\d)\),newPosition\((\d+,\d+,\d)\)\)(?:.setPlane\((\d)\))?/mg;
+          var areasPattern = /(?:newArea\((\d+,\d+,\d+,\d+)\)|\(newPosition\((\d+,\d+,\d)\),newPosition\((\d+,\d+,\d)\)\))(?:.setPlane\((\d)\))?/mg;
           var match;
           while((match = areasPattern.exec(text))) {
             if (match[1] !== undefined) {
