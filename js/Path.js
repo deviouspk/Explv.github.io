@@ -93,6 +93,17 @@ define("Path", ["Position"], function (Position) {
             return outputPositions;
         }
 
+        fromString(text) {
+          this.removeAll();
+          text = text.replace(/\s/g, '');
+          var posPattern = /newPosition\((\d+,\d+,\d)\)/mg;
+          var match;
+          while((match = posPattern.exec(text))) {
+              var values = match[1].split(",");
+              this.add(new Position(values[0], values[1], values[2]));
+          }
+        }
+
         toArrayString() {
             if (this.positions.length == 1) {
                 return this.positions[0].toJavaCode();

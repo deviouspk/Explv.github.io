@@ -4,12 +4,10 @@ define("Area", ['leaflet', 'Drawable', 'Position'], function(L, Drawable, Positi
 
     return class Area extends Drawable {
 
-        constructor(map, startPosition, endPosition) {
-            super(map);
-            this.map = map;
+        constructor(startPosition, endPosition) {
+            super();
             this.startPosition = startPosition;
             this.endPosition = endPosition;
-            this.rectangle = this.toLeaflet();
         }
 
         static fromBounds(map, bounds) {
@@ -20,7 +18,7 @@ define("Area", ['leaflet', 'Drawable', 'Position'], function(L, Drawable, Positi
             );
         }
 
-        toLeaflet() {
+        toLeaflet(map) {
 
             var newStartPosition = new Position(this.startPosition.x, this.startPosition.y, this.startPosition.z);
             var newEndPosition = new Position(this.endPosition.x, this.endPosition.y, this.startPosition.z);
@@ -39,8 +37,8 @@ define("Area", ['leaflet', 'Drawable', 'Position'], function(L, Drawable, Positi
 
             return L.rectangle(
                 L.latLngBounds(
-                    newStartPosition.toLatLng(this.map),
-                    newEndPosition.toLatLng(this.map)
+                    newStartPosition.toLatLng(map),
+                    newEndPosition.toLatLng(map)
                 ), {
                     color: "#33b5e5",
                     weight: 1,

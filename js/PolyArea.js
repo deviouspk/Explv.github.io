@@ -1,6 +1,6 @@
 'use strict';
 
-define("PolyArea", ['jquery', "Drawable"], function ($, Drawable) {
+define("PolyArea", ['jquery', "Drawable", "Position"], function ($, Drawable, Position) {
 
     return class PolyArea extends Drawable {
 
@@ -77,7 +77,25 @@ define("PolyArea", ['jquery', "Drawable"], function ($, Drawable) {
             );
         }
 
+        fromString(text) {
+          this.removeAll();
+          text = text.replace(/\s/g, '');
+          var positionsPattern = /\{(\d+),(\d+)\}/mg;
+          var zPattern = /.setPlane\(\d\)/mg;
+
+          var zMatch = zPattern.exec(text);
+          var z = zMatch ? zMatch[1] : 0;
+
+          var match;
+          while((match = positionsPattern.exec(text))) {
+            this.add(new Position(match[1], match[2], z));
+          }
+        }
+
         toJavaCode() {
+            if (this.positions.length == 0) {
+              return "";
+            }
             var output = "Area area = new Area(\n    new int[][]{";
             for (var i = 0; i < this.positions.length; i++) {
                 output += `\n        { ${this.positions[i].x}, ${this.positions[i].y} }`;

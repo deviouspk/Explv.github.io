@@ -217,7 +217,7 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
         });
 
         var path = new Path(map, new L.FeatureGroup());
-        var areas = new Areas(new L.FeatureGroup());
+        var areas = new Areas(map, new L.FeatureGroup());
         var polyArea = new PolyArea(new L.FeatureGroup(), map);
 
         var currentDrawable;
@@ -336,7 +336,7 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
                     firstSelectedAreaPosition = position;
                 } else {
                     map.removeLayer(drawnMouseArea);
-                    areas.add(new Area(map, firstSelectedAreaPosition, position));
+                    areas.add(new Area(firstSelectedAreaPosition, position));
                     firstSelectedAreaPosition = undefined;
                     output();
                 }
@@ -370,7 +370,7 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
 
                     if (drawnMouseArea !== undefined) map.removeLayer(drawnMouseArea);
 
-                    drawnMouseArea = new Area(map, firstSelectedAreaPosition, mousePos).rectangle;
+                    drawnMouseArea = new Area(firstSelectedAreaPosition, mousePos).toLeaflet(map);
                     drawnMouseArea.addTo(map, true);
                 }
             }
@@ -397,6 +397,11 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
             cursorX = e.clientX;
             cursorY = e.clientY;
         };
+
+        $("#code-output").on('input propertychange paste', function() {
+            currentDrawable.fromString($("#code-output").text());
+            output();
+        });
 
         function output() {
 
