@@ -48,7 +48,7 @@ define("Area", ['leaflet', 'Drawable', 'Position'], function(L, Drawable, Positi
         }
 
         toJavaCode() {
-            var areaDef = `Area area = new Area(${this.startPosition.x}, ${this.startPosition.y}, ${this.endPosition.x}, ${this.endPosition.y})`;
+            var areaDef = `new Area(${this.startPosition.x}, ${this.startPosition.y}, ${this.endPosition.x}, ${this.endPosition.y})`;
             if (this.startPosition.z > 0) {
               areaDef += `.setPlane(${this.startPosition.z})`;
             }

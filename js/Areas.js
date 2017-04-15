@@ -63,7 +63,7 @@ define("Areas", ['jquery', 'Area', 'Position'], function ($, Area, Position) {
 
         toArrayString() {
             if (this.areas.length === 1) {
-                return this.areas[0].toJavaCode() + ";";
+                return "Area area = " + this.areas[0].toJavaCode() + ";";
             } else if (this.areas.length > 1) {
                 var output = "Area[] area = {\n";
                 var numAreas = this.areas.length;
