@@ -126,7 +126,7 @@ define("Path", ["Position"], function (Position) {
             } else if (this.positions.length > 1) {
                 var output = "List&lt;Position&gt; path = new ArrayList<>();\n";
                 for (var i = 0; i < this.positions.length; i++) {
-                    output += `positions.add(new Position(${this.positions[i].x}, ${this.positions[i].y}, ${this.positions[i].z}));\n`;
+                    output += `path.add(new Position(${this.positions[i].x}, ${this.positions[i].y}, ${this.positions[i].z}));\n`;
                 }
                 return output;
             }
