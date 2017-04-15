@@ -400,7 +400,6 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
 
         $("#code-output").on('input propertychange paste', function() {
             currentDrawable.fromString($("#code-output").text());
-            output();
         });
 
         function output() {
