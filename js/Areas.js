@@ -18,7 +18,7 @@ define("Areas", ['jquery', 'Area', 'Position'], function ($, Area, Position) {
             this.featureGroup.addLayer(rectangle);
         }
 
-        getLength(){
+        getLength() {
             return this.areas.length;
         }
 
@@ -67,9 +67,9 @@ define("Areas", ['jquery', 'Area', 'Position'], function ($, Area, Position) {
 
         toArrayString() {
             if (this.areas.length === 1) {
-                return "Area area = " + this.areas[0].toJavaCode() + ";";
+                return this.areas[0].toJavaCode();
             } else if (this.areas.length > 1) {
-                var output = "Area[] area = {\n";
+                var output = "[\n";
                 var numAreas = this.areas.length;
                 $.each(this.areas, function (index, area) {
                     output += "    " + area.toJavaCode();
@@ -79,7 +79,7 @@ define("Areas", ['jquery', 'Area', 'Position'], function ($, Area, Position) {
                     output += "\n";
                 });
 
-                output += "};";
+                output += "]";
                 return output;
             }
             return "";

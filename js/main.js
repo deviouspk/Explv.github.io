@@ -259,11 +259,11 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
                     map.removeLayer(drawnMouseArea);
                     areas.add(new Area(firstSelectedAreaPosition, position));
                     firstSelectedAreaPosition = undefined;
-                    generateCoordinates()
+                    output()
                 }
             } else {
                 currentDrawable.add(position);
-                generateCoordinates();
+                output();
             }
         });
 
@@ -324,68 +324,24 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
         });
 
         function output() {
-            var wentInHere = false;
+
             var output = "";
-            // output += currentDrawable.toListString();
 
-            var rectangles;
-            rectangles = currentDrawable.getRectangles();
-
-
-            var counter = 0;
-            if (currentDrawable.areas !== null && currentDrawable.areas[0] !== undefined) {
-                currentDrawable.areas.forEach(function (area) {
-
-                    let x1 = area.getStartX();
-                    let x2 = area.getEndX();
-                    let y1 = area.getStartY();
-                    let y2 = area.getEndY();
-
-                    let upperLeft = new Coordinate(Math.min(x1, x2), Math.max(y1, y2));
-                    let bottomRight = new Coordinate(Math.max(x1, x2), Math.min(y1, y2));
-
-                    let width = bottomRight.x - upperLeft.x;
-                    let height = upperLeft.y - bottomRight.y;
-
-                    var currentCoordinates = [];
-                    var startCoordinatesLength = coordinates.length;
-                    counter = 0;
-                    for (let y = upperLeft.y; y >= bottomRight.y; y--) {
-                        for (let x = upperLeft.x; x <= bottomRight.x; x++) {
-
-                            if (coordinates.length >= 1) {
-                                var coordinate = new Coordinate(x, y);
-                                var alreadyInarray = false;
-
-                                coordinates.forEach(function (savedCoordinate) {
-                                    wentInHere = true;
-                                    if (coordinate.x === savedCoordinate.x && coordinate.y === savedCoordinate.y) {
-                                        alreadyInarray = true;
-                                    }
-
-                                });
-                                counter++;
-                                if (!alreadyInarray) {
-                                    coordinates.push(coordinate);
-                                    currentCoordinates.push(coordinate);
-                                }
-
-                            } else {
-
-                                coordinates.push(new Coordinate(x, y));
-                                currentCoordinates.push(coordinate);
-                            }
-
-
-                            console.log(x, y);
-                        }
-                    }
-
-
-                });
+            if (currentDrawable instanceof PolyArea) {
+                output += currentDrawable.toJavaCode();
+            } else {
+                switch (outputType) {
+                    case OutputType.ARRAY:
+                        output += currentDrawable.toArrayString();
+                        break;
+                    case OutputType.LIST:
+                        output += currentDrawable.toListString();
+                        break;
+                    case OutputType.ARRAYS_AS_LIST:
+                        output += currentDrawable.toArraysAsListString();
+                        break;
+                }
             }
-            console.log(counter);
-            console.log(coordinates);
 
             $("#code-output").html(output);
             SyntaxHighlighter.highlight($("#code-output"));
@@ -404,70 +360,63 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
             if (currentDrawable.areas !== null && currentDrawable.areas[0] !== undefined) {
                 currentDrawable.areas.forEach(function (area) {
 
-                    let x1 = area.getStartX();
-                    let x2 = area.getEndX();
-                    let y1 = area.getStartY();
-                    let y2 = area.getEndY();
+                        let x1 = area.getStartX();
+                        let x2 = area.getEndX();
+                        let y1 = area.getStartY();
+                        let y2 = area.getEndY();
 
-                    let upperLeft = new Coordinate(Math.min(x1, x2), Math.max(y1, y2));
-                    let bottomRight = new Coordinate(Math.max(x1, x2), Math.min(y1, y2));
+                        let upperLeft = new Coordinate(Math.min(x1, x2), Math.max(y1, y2));
+                        let bottomRight = new Coordinate(Math.max(x1, x2), Math.min(y1, y2));
 
-                    let width = bottomRight.x - upperLeft.x;
-                    let height = upperLeft.y - bottomRight.y;
+                        let width = bottomRight.x - upperLeft.x;
+                        let height = upperLeft.y - bottomRight.y;
 
-                    var currentCoordinates = [];
-                    var startCoordinatesLength = coordinates.length;
-                    counter = 0;
-                    for (let y = upperLeft.y; y >= bottomRight.y; y--) {
-                        for (let x = upperLeft.x; x <= bottomRight.x; x++) {
+                        var currentCoordinates = [];
+                        var startCoordinatesLength = coordinates.length;
+                        counter = 0;
+                        for (let y = upperLeft.y; y >= bottomRight.y; y--) {
+                            for (let x = upperLeft.x; x <= bottomRight.x; x++) {
+                                if (coordinates.length >= 1) {
+                                    var coordinate = new Coordinate(x, y);
+                                    var alreadyInarray = false;
 
-                            if (coordinates.length >= 1) {
-                                var coordinate = new Coordinate(x, y);
-                                var alreadyInarray = false;
-
-                                coordinates.forEach(function (savedCoordinate) {
-                                    wentInHere = true;
-                                    if (coordinate.x === savedCoordinate.x && coordinate.y === savedCoordinate.y) {
-                                        alreadyInarray = true;
+                                    coordinates.forEach(function (savedCoordinate) {
+                                        wentInHere = true;
+                                        if (coordinate.x === savedCoordinate.x && coordinate.y === savedCoordinate.y) {
+                                            alreadyInarray = true;
+                                        }
+                                    });
+                                    counter++;
+                                    if (!alreadyInarray) {
+                                        coordinates.push(coordinate);
+                                        currentCoordinates.push(coordinate);
                                     }
 
-                                });
-                                counter++;
-                                if (!alreadyInarray) {
-                                    coordinates.push(coordinate);
+                                } else {
+
+                                    coordinates.push(new Coordinate(x, y));
                                     currentCoordinates.push(coordinate);
                                 }
-
-                            } else {
-
-                                coordinates.push(new Coordinate(x, y));
-                                currentCoordinates.push(coordinate);
+                                console.log(x, y);
                             }
-
-
-                            console.log(x, y);
                         }
-                    }
-                    var endCoordinatesLength = coordinates.length;
-                    if (currentCoordinates.length !== 0 && startCoordinatesLength !== endCoordinatesLength)
-                        lastCoordinatesIndex.push(currentCoordinates.length);
-                    else if (currentCoordinates.length === 0 && currentDrawable.getLength() === lastCoordinatesIndex.length + 1)
-                        lastCoordinatesIndex.push(0);
+                        var endCoordinatesLength = coordinates.length;
+                        if (currentCoordinates.length !== 0 && startCoordinatesLength !== endCoordinatesLength)
+                            lastCoordinatesIndex.push(currentCoordinates.length);
+                        else if (currentCoordinates.length === 0 && currentDrawable.getLength() === lastCoordinatesIndex.length + 1)
+                            lastCoordinatesIndex.push(0);
 
-                    console.log("counter: " + counter + " length:" + coordinates.length);
-                    console.log(lastCoordinatesIndex);
-                    console.log(coordinates);
-                    var form = document.forms["test"];
+                        console.log("counter: " + counter + " length:" + coordinates.length);
+                        console.log(lastCoordinatesIndex);
+                        console.log(coordinates);
+                        var form = document.forms["test"];
 
                         for (let i = 0; i < coordinates.length; i++) {
                             addHidden(form, "coordinate[" + i + "][x]", coordinates[i].x);
                             addHidden(form, "coordinate[" + i + "][y]", coordinates[i].y);
-
                         }
-
-
                     }
-                    );
+                );
             }
 
             $("#code-output").html(output);
