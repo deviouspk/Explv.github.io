@@ -18,6 +18,10 @@ define("Areas", ['jquery', 'Area', 'Position'], function ($, Area, Position) {
             this.featureGroup.addLayer(rectangle);
         }
 
+        getLength(){
+            return this.areas.length;
+        }
+
         removeLast() {
             if (this.areas.length > 0) {
                 this.areas.pop();
@@ -41,24 +45,24 @@ define("Areas", ['jquery', 'Area', 'Position'], function ($, Area, Position) {
         }
 
         fromString(text) {
-          this.removeAll();
-          text = text.replace(/\s/g, '');
-          var areasPattern = /(?:newArea\((\d+,\d+,\d+,\d+)\)|\(newPosition\((\d+,\d+,\d)\),newPosition\((\d+,\d+,\d)\)\))(?:.setPlane\((\d)\))?/mg;
-          var match;
-          while((match = areasPattern.exec(text))) {
-            if (match[1] !== undefined) {
-              var z = match[4] !== undefined ? match[4] : 0;
-              var values = match[1].split(",");
-              this.add(new Area(new Position(values[0], values[1], z), new Position(values[2], values[3], z)));
-            } else {
-              var pos1Values = match[2].split(",");
-              var pos1Z = match[4] !== undefined ? match[4] : pos1Values[2];
+            this.removeAll();
+            text = text.replace(/\s/g, '');
+            var areasPattern = /(?:newArea\((\d+,\d+,\d+,\d+)\)|\(newPosition\((\d+,\d+,\d)\),newPosition\((\d+,\d+,\d)\)\))(?:.setPlane\((\d)\))?/mg;
+            var match;
+            while ((match = areasPattern.exec(text))) {
+                if (match[1] !== undefined) {
+                    var z = match[4] !== undefined ? match[4] : 0;
+                    var values = match[1].split(",");
+                    this.add(new Area(new Position(values[0], values[1], z), new Position(values[2], values[3], z)));
+                } else {
+                    var pos1Values = match[2].split(",");
+                    var pos1Z = match[4] !== undefined ? match[4] : pos1Values[2];
 
-              var pos2Values = match[3].split(",");
-              var pos2Z = match[4] !== undefined ? match[4] : pos2Values[2];
-              this.add(new Area(new Position(pos1Values[0], pos1Values[1], pos1Z), new Position(pos2Values[0], pos2Values[1], pos2Z)));
+                    var pos2Values = match[3].split(",");
+                    var pos2Z = match[4] !== undefined ? match[4] : pos2Values[2];
+                    this.add(new Area(new Position(pos1Values[0], pos1Values[1], pos1Z), new Position(pos2Values[0], pos2Values[1], pos2Z)));
+                }
             }
-          }
         }
 
         toArrayString() {
@@ -83,7 +87,7 @@ define("Areas", ['jquery', 'Area', 'Position'], function ($, Area, Position) {
 
         toListString() {
             if (this.areas.length === 1) {
-                return this.areas[0].toJavaCode()  + ";";
+                return this.areas[0].toJavaCode() + ";";
             } else if (this.areas.length > 1) {
                 var output = "List&lt;Area&gt; area = new ArrayList<>();\n";
                 $.each(this.areas, function (index, area) {
@@ -114,6 +118,10 @@ define("Areas", ['jquery', 'Area', 'Position'], function ($, Area, Position) {
                 return output;
             }
             return "";
+        }
+
+        getRectangles() {
+            return this.areas;
         }
     };
 });

@@ -1,5 +1,6 @@
 'use strict';
-
+var coordinates = [];
+var lastCoordinatesIndex = [];
 define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Position', 'Path', 'Area', 'Areas', 'PolyArea', 'SyntaxHighlighter', 'locations'],
 
     function (doc, $, $ui, Bootstrap, L, Position, Path, Area, Areas, PolyArea, SyntaxHighlighter, locations) {
@@ -7,161 +8,123 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
         var OutputType = Object.freeze({ARRAY: 1, LIST: 2, ARRAYS_AS_LIST: 3});
         var outputType = OutputType.ARRAY;
 
+
         var map = L.map('map', {
             //maxBounds: L.latLngBounds(L.latLng(-40, -180), L.latLng(85, 153))
-            zoomControl:false
-        }).setView([-73, -112], 7);
+            zoomControl: false
+        }).setView([-73.16, -105.94], 15);
+        map.dragging.disable();
+
 
         /*
-          Init custom controls
-        */
+         Init custom controls
+         */
         var titleLabel = L.Control.extend({
-          options: {
-            position: 'topleft'
-          },
-          onAdd: function(map) {
-            var container = L.DomUtil.create('div');
-            container.id = 'titleLabel';
-            container.href = 'http://osbot.org/forum/user/192661-explv/';
-            container.innerHTML = "<span id='explv'>Explv</span>'s OSBot Map";
+            options: {
+                position: 'topleft'
+            },
+            onAdd: function (map) {
+                var container = L.DomUtil.create('div');
+                container.id = 'titleLabel';
+                container.innerHTML = "<span id='explv'>RsBots | </span> Duel Arena Map";
 
-            L.DomEvent.disableClickPropagation(container);
-            return container;
-          }
+                L.DomEvent.disableClickPropagation(container);
+                return container;
+            }
         });
         map.addControl(new titleLabel());
 
         var coordinatesControl = L.Control.extend({
             options: {
-              position: 'topleft'
+                position: 'topleft'
             },
-            onAdd: function(map) {
-              var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
-              container.id = 'coordinates-container';
-              container.style.height = 'auto';
+            onAdd: function (map) {
+                var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+                container.id = 'coordinates-container';
+                container.style.height = 'auto';
 
-              var coordinatesForm = L.DomUtil.create('form', 'leaflet-bar leaflet-control leaflet-control-custom form-inline', container);
-              var formGroup = L.DomUtil.create('div', 'form-group', coordinatesForm);
-              var xCoordInput = L.DomUtil.create('input', 'form-control coord', formGroup);
-              xCoordInput.type = 'text';
-              xCoordInput.id = 'xCoord';
-              var yCoordInput = L.DomUtil.create('input', 'form-control coord', formGroup);
-              yCoordInput.type = 'text';
-              yCoordInput.id = 'yCoord';
-              var zCoordInput = L.DomUtil.create('input', 'form-control coord', formGroup);
-              zCoordInput.type = 'text';
-              zCoordInput.id = 'zCoord';
+                var coordinatesForm = L.DomUtil.create('form', 'leaflet-bar leaflet-control leaflet-control-custom form-inline', container);
+                var formGroup = L.DomUtil.create('div', 'form-group', coordinatesForm);
+                var xCoordInput = L.DomUtil.create('input', 'form-control coord', formGroup);
+                xCoordInput.type = 'text';
+                xCoordInput.id = 'xCoord';
+                var yCoordInput = L.DomUtil.create('input', 'form-control coord', formGroup);
+                yCoordInput.type = 'text';
+                yCoordInput.id = 'yCoord';
+                var zCoordInput = L.DomUtil.create('input', 'form-control coord', formGroup);
+                zCoordInput.type = 'text';
+                zCoordInput.id = 'zCoord';
 
-              L.DomEvent.disableClickPropagation(container);
-              return container;
+                L.DomEvent.disableClickPropagation(container);
+                return container;
             }
         });
         map.addControl(new coordinatesControl());
 
         L.control.zoom({
-            position:'topleft'
+            position: 'topleft'
         }).addTo(map);
 
         var planeControl = L.Control.extend({
             options: {
-              position: 'topleft'
+                position: 'topleft'
             },
-            onAdd: function(map) {
-              var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
-              container.style.background = 'none';
-              container.style.width = '70px';
-              container.style.height = 'auto';
+            onAdd: function (map) {
+                var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+                container.style.background = 'none';
+                container.style.width = '70px';
+                container.style.height = 'auto';
 
-              var incrementPlaneButton = L.DomUtil.create('a', 'leaflet-bar leaflet-control leaflet-control-custom', container);
-              incrementPlaneButton.id = 'increase-level';
-              incrementPlaneButton.innerHTML = 'Z +';
 
-              var decrementPlaneButton = L.DomUtil.create('a', 'leaflet-bar leaflet-control leaflet-control-custom', container);
-              decrementPlaneButton.id = 'decrease-level';
-              decrementPlaneButton.innerHTML = 'Z -';
-
-              L.DomEvent.disableClickPropagation(container);
-              return container;
+                L.DomEvent.disableClickPropagation(container);
+                return container;
             }
         });
         map.addControl(new planeControl());
 
         var locationSearch = L.Control.extend({
             options: {
-              position: 'topleft'
+                position: 'topleft'
             },
-            onAdd: function(map) {
-              var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
-              container.style.background = 'none';
-              container.style.width = '200px';
-              container.style.height = 'auto';
+            onAdd: function (map) {
+                var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+                container.style.background = 'none';
+                container.style.width = '200px';
+                container.style.height = 'auto';
 
-              var locationInput = L.DomUtil.create('input', 'leaflet-bar leaflet-control leaflet-control-custom', container);
-              locationInput.id = 'location-lookup';
-              locationInput.type = 'text';
-              locationInput.placeholder = "Go to location";
-
-              L.DomEvent.disableClickPropagation(container);
-              return container;
+                L.DomEvent.disableClickPropagation(container);
+                return container;
             }
         });
         map.addControl(new locationSearch());
 
         var collectionControls = L.Control.extend({
             options: {
-              position: 'topleft'
+                position: 'topright'
             },
-            onAdd: function(map) {
-              var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
-              container.style.background = 'none';
-              container.style.width = '70px';
-              container.style.height = 'auto';
+            onAdd: function (map) {
+                var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
+                container.style.background = 'none';
+                container.style.width = '70px';
+                container.style.height = 'auto';
 
-              var areaButton = L.DomUtil.create('a', 'leaflet-bar leaflet-control leaflet-control-custom toggle-collection', container);
-              areaButton.id = 'toggle-area';
-              areaButton.innerHTML = 'Area';
+                var areaButton = L.DomUtil.create('a', 'leaflet-bar leaflet-control leaflet-control-custom toggle-collection', container);
+                areaButton.id = 'toggle-area';
+                areaButton.innerHTML = 'Area';
 
-              var polyAreaButton = L.DomUtil.create('a', 'leaflet-bar leaflet-control leaflet-control-custom toggle-collection', container);
-              polyAreaButton.id = 'toggle-poly-area';
-              polyAreaButton.innerHTML = 'Poly Area';
+                var undoButton = L.DomUtil.create('a', 'leaflet-bar leaflet-control leaflet-control-custom', container);
+                undoButton.id = 'undo';
+                undoButton.innerHTML = '<i class="fa fa-undo" aria-hidden="true"></i>';
 
-              var pathButton = L.DomUtil.create('a', 'leaflet-bar leaflet-control leaflet-control-custom toggle-collection', container);
-              pathButton.id = 'toggle-path';
-              pathButton.innerHTML = 'Path';
+                var clearButton = L.DomUtil.create('a', 'leaflet-bar leaflet-control leaflet-control-custom', container);
+                clearButton.id = 'clear';
+                clearButton.innerHTML = '<i class="fa fa-trash" aria-hidden="true"></i>';
 
-              var undoButton = L.DomUtil.create('a', 'leaflet-bar leaflet-control leaflet-control-custom', container);
-              undoButton.id = 'undo';
-              undoButton.innerHTML = '<i class="fa fa-undo" aria-hidden="true"></i>';
-
-              var clearButton = L.DomUtil.create('a', 'leaflet-bar leaflet-control leaflet-control-custom', container);
-              clearButton.id = 'clear';
-              clearButton.innerHTML = '<i class="fa fa-trash" aria-hidden="true"></i>';
-
-              L.DomEvent.disableClickPropagation(container);
-              return container;
+                L.DomEvent.disableClickPropagation(container);
+                return container;
             }
         });
         map.addControl(new collectionControls());
-
-        var labelControl = L.Control.extend({
-            options: {
-              position: 'topleft'
-            },
-            onAdd: function(map) {
-              var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control');
-              container.style.background = 'none';
-              container.style.width = '100px';
-              container.style.height = 'auto';
-
-              var labelsButton = L.DomUtil.create('a', 'leaflet-bar leaflet-control leaflet-control-custom', container);
-              labelsButton.id = 'toggle-map-labels';
-              labelsButton.innerHTML = 'Toggle Labels';
-
-              L.DomEvent.disableClickPropagation(container);
-              return container;
-            }
-        });
-        map.addControl(new labelControl());
 
 
         var z = 0;
@@ -169,18 +132,19 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
         var layer;
 
         function setMapLayer() {
-          if (layer !== undefined) {
-            map.removeLayer(layer);
-          }
-          layer = L.tileLayer('https://raw.githubusercontent.com/Explv/osrs_map_full/master/' + z + '/{z}/{x}/{y}.png', {
-              minZoom: 7,
-              maxZoom: 11,
-              attribution: 'Map data',
-              noWrap: true,
-              tms: true
-          });
-          layer.addTo(map);
-          map.invalidateSize();
+            //console.log('https://raw.githubusercontent.com/Explv/osrs_map_full/master/' + z + '/{z}/{x}/{y}.png');
+            if (layer !== undefined) {
+                map.removeLayer(layer);
+            }
+            layer = L.tileLayer('https://raw.githubusercontent.com/Explv/osrs_map_full/master/' + z + '/{z}/{x}/{y}.png', {
+                minZoom: 11,
+                maxZoom: 11,
+                attribution: 'Map data',
+                noWrap: true,
+                tms: true
+            });
+            layer.addTo(map);
+            map.invalidateSize();
         }
 
         setMapLayer();
@@ -189,32 +153,26 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
 
         for (var location in locations) {
 
-          if (locations.hasOwnProperty(location)) {
-            if (locations[location].z !== z) {
-              continue;
+            if (locations.hasOwnProperty(location)) {
+                if (locations[location].z !== z) {
+                    continue;
+                }
+
+                var mapLabel = L.marker(locations[location].toCentreLatLng(map), {
+                    icon: L.divIcon({
+                        className: 'map-label',
+                        html: `<p>${location}</p>`
+                    }),
+                    zIndexOffset: 1000
+                });
+
+                mapLabels.addLayer(mapLabel);
             }
-
-            var mapLabel = L.marker(locations[location].toCentreLatLng(map), {
-                icon: L.divIcon({
-                    className: 'map-label',
-                    html: `<p>${location}</p>`
-                }),
-                zIndexOffset: 1000
-            });
-
-            mapLabels.addLayer(mapLabel);
-          }
         }
 
         mapLabels.addTo(map);
+        map.removeLayer(mapLabels);
 
-        $("#toggle-map-labels").click(function() {
-            if (map.hasLayer(mapLabels)) {
-              map.removeLayer(mapLabels);
-            } else {
-              mapLabels.addTo(map);
-            }
-        });
 
         var path = new Path(map, new L.FeatureGroup());
         var areas = new Areas(map, new L.FeatureGroup());
@@ -245,31 +203,9 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
                     break;
             }
             output();
-        })
+        });
 
         $(".toggle-collection").click(function () {
-
-            if ($(this).hasClass("active")) {
-
-                editing = false;
-
-                $(this).removeClass("active");
-                $("#output-container").hide();
-                $("#map-container").removeClass("col-lg-9 col-md-7 col-sm-8 col-xs-8");
-                $("#map-container").addClass("col-lg-12 col-md-12 col-sm-12 col-xs-12");
-                map.invalidateSize();
-
-                firstSelectedAreaPosition = undefined;
-                path.hide(map);
-                areas.hide(map);
-                polyArea.hide(map);
-
-                if (drawnMouseArea !== undefined) {
-                  map.removeLayer(drawnMouseArea);
-                }
-                output();
-                return;
-            }
 
             editing = true;
 
@@ -283,50 +219,35 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
                 map.invalidateSize();
             }
 
-            switch ($(this).attr("id")) {
-                case "toggle-path":
-                    firstSelectedAreaPosition = undefined;
-                    areas.hide(map);
-                    polyArea.hide(map);
-                    path.show(map);
-                    if (drawnMouseArea !== undefined) {
-                        map.removeLayer(drawnMouseArea);
-                    }
-                    currentDrawable = path;
-                    break;
-                case "toggle-area":
-                    path.hide(map);
-                    polyArea.hide(map);
-                    areas.show(map);
-                    currentDrawable = areas;
-                    break;
-                case "toggle-poly-area":
-                    firstSelectedAreaPosition = undefined;
-                    path.hide(map);
-                    areas.hide(map);
-                    polyArea.show(map);
-                    if (drawnMouseArea !== undefined) {
-                        map.removeLayer(drawnMouseArea);
-                    }
-                    currentDrawable = polyArea;
-                    break;
-            }
+            path.hide(map);
+            polyArea.hide(map);
+            areas.show(map);
+            currentDrawable = areas;
+
             output();
         });
 
         $("#undo").click(function () {
             currentDrawable.removeLast();
-            output();
+            console.log(lastCoordinatesIndex);
+            if (lastCoordinatesIndex.length > 0) {
+                for (let index = lastCoordinatesIndex.pop(); index > 0; index--) {
+                    coordinates.pop();
+                }
+            }
+            console.log(coordinates);
+            //output();
         });
 
         $("#clear").click(function () {
             currentDrawable.removeAll();
+            coordinates = [];
             output();
         });
 
         map.on('click', function (e) {
             if (!editing) {
-              return;
+                return;
             }
 
             var position = Position.fromLatLng(map, e.latlng, z);
@@ -338,11 +259,11 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
                     map.removeLayer(drawnMouseArea);
                     areas.add(new Area(firstSelectedAreaPosition, position));
                     firstSelectedAreaPosition = undefined;
-                    output();
+                    generateCoordinates()
                 }
             } else {
                 currentDrawable.add(position);
-                output();
+                generateCoordinates();
             }
         });
 
@@ -398,71 +319,180 @@ define("main", ['domReady!', 'jquery', 'jqueryui', 'bootstrap', 'leaflet', 'Posi
             cursorY = e.clientY;
         };
 
-        $("#code-output").on('input propertychange paste', function() {
+        $("#code-output").on('input propertychange paste', function () {
             currentDrawable.fromString($("#code-output").text());
         });
 
         function output() {
-
+            var wentInHere = false;
             var output = "";
+            // output += currentDrawable.toListString();
 
-            if (currentDrawable instanceof PolyArea) {
-                output += currentDrawable.toJavaCode();
-            } else {
-                switch (outputType) {
-                    case OutputType.ARRAY:
-                        output += currentDrawable.toArrayString();
-                        break;
-                    case OutputType.LIST:
-                        output += currentDrawable.toListString();
-                        break;
-                    case OutputType.ARRAYS_AS_LIST:
-                        output += currentDrawable.toArraysAsListString();
-                        break;
-                }
+            var rectangles;
+            rectangles = currentDrawable.getRectangles();
+
+
+            var counter = 0;
+            if (currentDrawable.areas !== null && currentDrawable.areas[0] !== undefined) {
+                currentDrawable.areas.forEach(function (area) {
+
+                    let x1 = area.getStartX();
+                    let x2 = area.getEndX();
+                    let y1 = area.getStartY();
+                    let y2 = area.getEndY();
+
+                    let upperLeft = new Coordinate(Math.min(x1, x2), Math.max(y1, y2));
+                    let bottomRight = new Coordinate(Math.max(x1, x2), Math.min(y1, y2));
+
+                    let width = bottomRight.x - upperLeft.x;
+                    let height = upperLeft.y - bottomRight.y;
+
+                    var currentCoordinates = [];
+                    var startCoordinatesLength = coordinates.length;
+                    counter = 0;
+                    for (let y = upperLeft.y; y >= bottomRight.y; y--) {
+                        for (let x = upperLeft.x; x <= bottomRight.x; x++) {
+
+                            if (coordinates.length >= 1) {
+                                var coordinate = new Coordinate(x, y);
+                                var alreadyInarray = false;
+
+                                coordinates.forEach(function (savedCoordinate) {
+                                    wentInHere = true;
+                                    if (coordinate.x === savedCoordinate.x && coordinate.y === savedCoordinate.y) {
+                                        alreadyInarray = true;
+                                    }
+
+                                });
+                                counter++;
+                                if (!alreadyInarray) {
+                                    coordinates.push(coordinate);
+                                    currentCoordinates.push(coordinate);
+                                }
+
+                            } else {
+
+                                coordinates.push(new Coordinate(x, y));
+                                currentCoordinates.push(coordinate);
+                            }
+
+
+                            console.log(x, y);
+                        }
+                    }
+
+
+                });
             }
+            console.log(counter);
+            console.log(coordinates);
 
             $("#code-output").html(output);
             SyntaxHighlighter.highlight($("#code-output"));
         }
 
-        $("#increase-level").click(function() {
-          if (z == 3) {
-            return;
-          }
-          z ++;
-          $("#zCoord").val(z);
-          setMapLayer();
-        });
+        function generateCoordinates() {
+            var wentInHere = false;
+            var output = "";
+            // output += currentDrawable.toListString();
 
-        $("#decrease-level").click(function() {
-          if (z == 0) {
-            return;
-          }
-          z --;
-          $("#zCoord").val(z);
-          setMapLayer();
-        });
+            var rectangles;
+            rectangles = currentDrawable.getRectangles();
 
-        $("#map, #location-lookup").autocomplete({
-          minLength:2,
-          source: function (request, response) {
-           var locationsArray = $.map(locations, function (value, key) {
-                return {
-                    label: key,
-                    value: value
-                }
-            });
-            response($.ui.autocomplete.filter(locationsArray, request.term));
-          },
-          focus: function(event, ui) {
-              $("#location-lookup").val(ui.item.label);
-              return false;
-          },
-          select: function(event, ui) {
-              $("#location-lookup").val(ui.item.label);
-              goToCoordinates(ui.item.value.x, ui.item.value.y);
-              return false;
-          }
-        });
-});
+
+            var counter = 0;
+            if (currentDrawable.areas !== null && currentDrawable.areas[0] !== undefined) {
+                currentDrawable.areas.forEach(function (area) {
+
+                    let x1 = area.getStartX();
+                    let x2 = area.getEndX();
+                    let y1 = area.getStartY();
+                    let y2 = area.getEndY();
+
+                    let upperLeft = new Coordinate(Math.min(x1, x2), Math.max(y1, y2));
+                    let bottomRight = new Coordinate(Math.max(x1, x2), Math.min(y1, y2));
+
+                    let width = bottomRight.x - upperLeft.x;
+                    let height = upperLeft.y - bottomRight.y;
+
+                    var currentCoordinates = [];
+                    var startCoordinatesLength = coordinates.length;
+                    counter = 0;
+                    for (let y = upperLeft.y; y >= bottomRight.y; y--) {
+                        for (let x = upperLeft.x; x <= bottomRight.x; x++) {
+
+                            if (coordinates.length >= 1) {
+                                var coordinate = new Coordinate(x, y);
+                                var alreadyInarray = false;
+
+                                coordinates.forEach(function (savedCoordinate) {
+                                    wentInHere = true;
+                                    if (coordinate.x === savedCoordinate.x && coordinate.y === savedCoordinate.y) {
+                                        alreadyInarray = true;
+                                    }
+
+                                });
+                                counter++;
+                                if (!alreadyInarray) {
+                                    coordinates.push(coordinate);
+                                    currentCoordinates.push(coordinate);
+                                }
+
+                            } else {
+
+                                coordinates.push(new Coordinate(x, y));
+                                currentCoordinates.push(coordinate);
+                            }
+
+
+                            console.log(x, y);
+                        }
+                    }
+                    var endCoordinatesLength = coordinates.length;
+                    if (currentCoordinates.length !== 0 && startCoordinatesLength !== endCoordinatesLength)
+                        lastCoordinatesIndex.push(currentCoordinates.length);
+                    else if (currentCoordinates.length === 0 && currentDrawable.getLength() === lastCoordinatesIndex.length + 1)
+                        lastCoordinatesIndex.push(0);
+
+                    console.log("counter: " + counter + " length:" + coordinates.length);
+                    console.log(lastCoordinatesIndex);
+                    console.log(coordinates);
+                    var form = document.forms["test"];
+
+                        for (let i = 0; i < coordinates.length; i++) {
+                            addHidden(form, "coordinate[" + i + "][x]", coordinates[i].x);
+                            addHidden(form, "coordinate[" + i + "][y]", coordinates[i].y);
+
+                        }
+
+
+                    }
+                    );
+            }
+
+            $("#code-output").html(output);
+            SyntaxHighlighter.highlight($("#code-output"));
+
+
+        }
+
+        function addHidden(theForm, key, value) {
+            // Create a hidden input element, and append it to the form:
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key; // 'the key/name of the attribute/field that is sent to the server
+            input.value = value;
+            theForm.appendChild(input);
+        }
+
+        function Coordinate(x, y) {
+            this.x = x;
+            this.y = y;
+            this.coordinateToString = function () {
+                return "x: " + x + " " + "y: " + y;
+            }
+        }
+    })
+;
+
+

@@ -1,6 +1,6 @@
 'use strict';
 
-define("Area", ['leaflet', 'Drawable', 'Position'], function(L, Drawable, Position) {
+define("Area", ['leaflet', 'Drawable', 'Position'], function (L, Drawable, Position) {
 
     return class Area extends Drawable {
 
@@ -40,7 +40,7 @@ define("Area", ['leaflet', 'Drawable', 'Position'], function(L, Drawable, Positi
                     newStartPosition.toLatLng(map),
                     newEndPosition.toLatLng(map)
                 ), {
-                    color: "#33b5e5",
+                    color: "#e5001a",
                     weight: 1,
                     interactive: false
                 }
@@ -50,9 +50,24 @@ define("Area", ['leaflet', 'Drawable', 'Position'], function(L, Drawable, Positi
         toJavaCode() {
             var areaDef = `new Area(${this.startPosition.x}, ${this.startPosition.y}, ${this.endPosition.x}, ${this.endPosition.y})`;
             if (this.startPosition.z > 0) {
-              areaDef += `.setPlane(${this.startPosition.z})`;
+                areaDef += `.setPlane(${this.startPosition.z})`;
             }
-            return areaDef;
+            return "hey";
+        }
+
+        getStartX() {
+            return this.startPosition.x;
+        }
+        getStartY(){
+            return this.startPosition.y;
+        }
+
+        getEndX() {
+            return this.endPosition.x;
+        }
+
+        getEndY() {
+            return this.endPosition.y
         }
 
         getName() {
